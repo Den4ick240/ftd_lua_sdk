@@ -5,9 +5,14 @@ import sys
 
 def get_lua_files():
     lua_files = []
-    for file in os.listdir(os.getcwd()):
-        if file.endswith(".lua"):
-            lua_files.append(file)
+    for root, _, files in os.walk("."):
+        if root.startswith("./"):
+            root = root[2:]
+        if root.startswith("."):
+            continue
+        for file in files:
+            if file.endswith(".lua"):
+                lua_files.append(os.path.join(root, file))
     return lua_files
 
 
@@ -16,10 +21,8 @@ def extract_dependencies(lua_file):
     with open(lua_file, 'r') as file:
         content = file.read()
         matches = re.findall(r'require\(["\'](.*?)["\']\)', content)
-        # pattern = r'\.(?!lua\b)'
-        # dependencies.extend([re.sub(pattern, '/', match) for match in matches])
-        dependencies.extend([match.replace('.lua', '').replace(
-            '.', '/') + '.lua' for match in matches])
+        dependencies.extend(
+            [os.path.join(*match.replace('.lua', '').split('.')) + '.lua' for match in matches])
     return dependencies
 
 
@@ -75,9 +78,8 @@ def combine_files(lua_files):
 
 
 def create_result_file(combined_content, output_file):
-    build_folder = '.build'
-    os.makedirs(build_folder, exist_ok=True)
-    result_file_path = os.path.join(build_folder, output_file.replace('/', '.'))
+    result_file_path = os.path.join('.build', output_file)
+    os.makedirs(os.path.dirname(result_file_path), exist_ok=True)
     with open(result_file_path, 'w') as file:
         file.write(combined_content)
 
