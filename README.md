@@ -44,7 +44,7 @@ The result will be saved in .build folder.
 
 ## I.lua
 
-This file contains stubs for all From the Depths Lua functions and fields along, all of them are documented (based on in game description).
+This file contains stubs for all From the Depths functions and fields that can be used inside LUA Box. All of them are documented based on in game description.
 
 Just add this to your lua script:
 
