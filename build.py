@@ -94,4 +94,9 @@ if __name__ == '__main__':
     dependency_tree = build_dependency_tree(lua_files)
     ordered_files = get_ordered_files(dependency_tree)
     combined_content = combine_files(ordered_files)
+    try:
+        import pyperclip
+        pyperclip.copy(combined_content)
+    except ImportError:
+        print('Install pyperclip if you want the code automatically copied to clipboard')
     create_result_file(combined_content, output_file)

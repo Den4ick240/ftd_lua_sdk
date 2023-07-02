@@ -17,28 +17,64 @@ function I:ClearLogs() end
 function I:LogToHud(message) end
 
 -- Returns the index of the ship in the fleet. Starts at 0.
-
 -- (int) Position of the ship in the fleet, starting from 0.
 I.FleetIndex = nil
 
 -- Returns the current state of the fleet.
-
 -- (FleetInfo) Information about the fleet
+--
+-- FleetInfo
+-- ID:[int] Unique ID of the fleet.
+-- Name:[string] Name of the fleet.
+-- Flagship: [FriendlyInfo] Information about the flagship of the fleet.
+-- Members: [FriendlyInfo[]] A table of information regarding the fleet's members.  MAY CONTAIN NILS!
+--
+-- FriendlyInfo
+-- Valid:[bool] false if the Friendly Info could not be retrieved
+-- Rotation:[Quaternion] the rotation of the friendly construct
+-- ReferencePosition: [Vector3] the position of the construct (world East Up North frame) from which PositiveSize and Negative size are referenced
+-- PositiveSize: [Vector3] the extent of the construct in the right,up,forwards direction relative to ReferencePostion
+-- NegativeSize: [Vector3] the extent of the construct in the left,down,back direction relative to ReferencePosition
+-- CenterOfMass: [Vector3] the centre of mass of the construct in world East Up North frame
+-- Velocity: [Vector3] the velocity of the construct in world East Up North frame
+-- UpVector: [Vector3] The up vector in world East Up North frame
+-- RightVector: [Vector3] The up vector in world East Up North frame
+-- ForwardVector: [Vector3] The forward vector in world East Up North frame
+-- HealthFraction: [float] the fraction of health (including turrets etc)
+-- SparesFraction: [float] the spares fraction. Returns 1 if no spares storage present
+-- AmmoFraction: [float] the ammo fraction. Returns 1 if no ammo storage present
+-- FuelFraction: [float] the fuel fraction. Returns 1 if no fuel storage present
+-- EnergyFraction: [float] the energy fraction. Returns 1 if no batteries present
+-- PowerFraction: [float] the power fraction. Returns 1 if no fuel storage present
+-- ElectricPowerFraction: [float] the electric power fraction. Returns 1 if no fuel storage present
+-- AxisAlignedBoundingBoxMinimum: [Vector3] the world East Up North minimum extent of the construct
+-- AxisAlignedBoundingBoxMaximum: [Vector3] the world East Up North maximum extent of the construct
+-- BlueprintName: [string] the name
+-- Id: [int] the unique Id of the construct
 I.Fleet = nil
 
 -- Used to determine whether the ship is a flagship of a fleet.
-
 -- (bool) Is the craft the fleet flagship?
 I.IsFlagship = nil
 
 -- Returns a Lua table containing a list of known resource zones.
-
 -- (ResourceZoneInfo[]) List of ResourceZones
 I.ResourceZones = nil
 
 -- Returns information about a ship's available resources.
-
 -- (ResourceInfo) Ship resource data
+--
+-- ResourceInfo
+-- CrystalTotal [float]: Total Crystal resources.
+-- CrystalMax [float]: Max Crystal resources.
+-- MetalTotal [float]: Total Metal resources.
+-- MetalMax [float]: Max Metal resources.
+-- NaturalTotal [float]: Total Natural resources.
+-- NaturalMax [float]: Max Natural resources.
+-- OilTotal [float]: Total Oil resources.
+-- OilMax [float]: Max Oil resources.
+-- ScrapTotal [float]: Total Scrap resources.
+-- ScrapMax [float]: Max Scrap resources.
 I.Resources = nil
 
 -- returns the movement mode of the AI mainframe specified by the index
@@ -102,7 +138,7 @@ function I:MoveFortress(direction) end
 --   • {drive} (float): value to add to the axis on this frame.
 --- @param axisName string
 --- @param drive number
-function I:RequestCustomAxis(axisName, drive) end
+function I:RequestCustomAxis(axisName,drive) end
 
 -- Returns the value of the named axis that it had the previous frame, or 0 if axis not created yet.
 -- Parameters: ~
@@ -163,7 +199,7 @@ function I:GetTargetPositionInfo(mainframeIndex, targetIndex) end
 --- @param y number
 --- @param z any
 --- @return any
-function I:GetTargetPositionInfoForPosition(mainframeIndex, x, y, z) end
+function I:GetTargetPositionInfoForPosition(mainframeIndex, x,y,z) end
 
 -- Returns altitude of the terrain at a position in the world. Can be overloaded with a single Vector3 rather than x,y,z components.
 -- Parameters: ~
@@ -176,7 +212,7 @@ function I:GetTargetPositionInfoForPosition(mainframeIndex, x, y, z) end
 --- @param y number
 --- @param z any
 --- @return number
-function I:GetTerrainAltitudeForPosition(x, y, z) end
+function I:GetTerrainAltitudeForPosition(x,y,z) end
 
 -- Returns altitude of the terrain at a position relative to the construct. Can be overloaded with a single Vector3 rather than x,y,z components.
 -- Parameters: ~
@@ -189,7 +225,7 @@ function I:GetTerrainAltitudeForPosition(x, y, z) end
 --- @param y number
 --- @param z any
 --- @return number
-function I:GetTerrainAltitudeForLocalPosition(x, y, z) end
+function I:GetTerrainAltitudeForLocalPosition(x,y,z) end
 
 -- Returns gravity vector for an altitude. gravity.y is the component of interest.
 -- Parameters: ~
@@ -374,7 +410,7 @@ function I:GetHealthFraction() end
 -- Returns true if the vehicle is docked
 -- Return: ~
 -- (bool) Docked? true for yes.
---- @return any
+--- @return boolean
 function I:IsDocked() end
 
 -- Returns health difference over a specified measurement time
@@ -416,7 +452,7 @@ function I:Component_GetCount(type) end
 --- @param type number
 --- @param index number
 --- @return any
-function I:Component_GetLocalPosition(type, index) end
+function I:Component_GetLocalPosition(type,index) end
 
 -- Returns an extensive BlockInfo object for the component.
 -- Parameters: ~
@@ -424,10 +460,22 @@ function I:Component_GetLocalPosition(type, index) end
 --   • {index} (int): the index of the component you want block info for..
 -- Return: ~
 -- (BlockInfo) a BlockInfo structure relating to the component.
+--
+-- BlockInfo
+-- Valid:[bool] false means this BlockInfo packet is useless
+-- Position:[Vector3] position in world (east,up,north)
+-- LocalPosition:[Vector3] position in construct (right,up,forwards)
+-- LocalPositionRelativeToCom:[Vector3] local position relative to the center of mass
+-- Forwards:[Vector3] forwards direction in world(east,up,north)
+-- LocalForwards:[Vector3] forward direction in construct (right,up,forwards)
+-- Rotation:[Quaternion] the rotation of the block in world coordinates
+-- LocalRotation:[Quaternion] the rotation of the block in the vehicle's (or turret's) coordinate system.
+-- SubConstructIdentifier:[int] the sub construct identifier of the subconstruct the block is part of.
+-- CustomName:[string] the custom name assigned to the block
 --- @param type number
 --- @param index number
 --- @return any
-function I:Component_GetBlockInfo(type, index) end
+function I:Component_GetBlockInfo(type,index) end
 
 -- Returns a boolean (true/false) for a component. Depending on the type of this component this means different things (or nothing at all). Default return is false.
 -- Parameters: ~
@@ -437,7 +485,7 @@ function I:Component_GetBlockInfo(type, index) end
 -- (bool) the first boolean logic for this component. For a component without boolean logic, or a block index that doesn't exist, false is returned.
 --- @param type number
 --- @param blockIndex number
---- @return any
+--- @return boolean
 function I:Component_GetBoolLogic(type, blockIndex) end
 
 -- Returns a boolean (true/false) for a component. Depending on the type of this component this means different things (or nothing at all). Default return is false.
@@ -450,7 +498,7 @@ function I:Component_GetBoolLogic(type, blockIndex) end
 --- @param type number
 --- @param blockIndex number
 --- @param propertyIndex number
---- @return any
+--- @return boolean
 function I:Component_GetBoolLogic_1(type, blockIndex, propertyIndex) end
 
 -- Sets the first boolean logic for a component. Depending on the type of this component this means different things (or nothing at all).
@@ -460,8 +508,8 @@ function I:Component_GetBoolLogic_1(type, blockIndex, propertyIndex) end
 --   • {bool} (bool): the true/false you want to set.
 --- @param type number
 --- @param index number
---- @param bool any
-function I:Component_SetBoolLogic(type, index, bool) end
+--- @param bool boolean
+function I:Component_SetBoolLogic(type,index,bool) end
 
 -- Sets the specified boolean logic for a component. Depending on the type of this component this means different things (or nothing at all).
 -- Parameters: ~
@@ -472,7 +520,7 @@ function I:Component_SetBoolLogic(type, index, bool) end
 --- @param type number
 --- @param blockIndex number
 --- @param propertyIndex1 number
---- @param bool1 any
+--- @param bool1 boolean
 function I:Component_SetBoolLogic_1(type, blockIndex, propertyIndex1, bool1) end
 
 -- Sets the two specified boolean logics for a component. Depending on the type of this component this means different things (or nothing at all).
@@ -486,9 +534,9 @@ function I:Component_SetBoolLogic_1(type, blockIndex, propertyIndex1, bool1) end
 --- @param type number
 --- @param blockIndex number
 --- @param propertyIndex1 number
---- @param bool1 any
+--- @param bool1 boolean
 --- @param propertyIndex2 number
---- @param bool2 any
+--- @param bool2 boolean
 function I:Component_SetBoolLogic_2(type, blockIndex, propertyIndex1, bool1, propertyIndex2, bool2) end
 
 -- Sets the three specified boolean logics for a component. Depending on the type of this component this means different things (or nothing at all).
@@ -504,22 +552,12 @@ function I:Component_SetBoolLogic_2(type, blockIndex, propertyIndex1, bool1, pro
 --- @param type number
 --- @param blockIndex number
 --- @param propertyIndex1 number
---- @param bool1 any
+--- @param bool1 boolean
 --- @param propertyIndex2 number
---- @param bool2 any
+--- @param bool2 boolean
 --- @param propertyIndex3 number
---- @param bool3 any
-function I:Component_SetBoolLogic_3(
-	type,
-	blockIndex,
-	propertyIndex1,
-	bool1,
-	propertyIndex2,
-	bool2,
-	propertyIndex3,
-	bool3
-)
-end
+--- @param bool3 boolean
+function I:Component_SetBoolLogic_3(type, blockIndex, propertyIndex1, bool1, propertyIndex2, bool2, propertyIndex3, bool3) end
 
 -- Returns a floating point value for a component. Depending on the type of this component this means different things (or nothing at all). Default return is 0.
 -- Parameters: ~
@@ -553,7 +591,7 @@ function I:Component_GetFloatLogic_1(type, blockIndex, propertyIndex) end
 --- @param type number
 --- @param index number
 --- @param float number
-function I:Component_SetFloatLogic(type, index, float) end
+function I:Component_SetFloatLogic(type,index,float) end
 
 -- Sets the specified float logic for a component. Depending on the type of this component this means different things (or nothing at all).
 -- Parameters: ~
@@ -601,17 +639,7 @@ function I:Component_SetFloatLogic_2(type, blockIndex, propertyIndex1, float1, p
 --- @param float2 number
 --- @param propertyIndex3 number
 --- @param float3 number
-function I:Component_SetFloatLogic_3(
-	type,
-	blockIndex,
-	propertyIndex1,
-	float1,
-	propertyIndex2,
-	float2,
-	propertyIndex3,
-	float3
-)
-end
+function I:Component_SetFloatLogic_3(type, blockIndex, propertyIndex1, float1, propertyIndex2, float2, propertyIndex3, float3) end
 
 -- Returns a integer number for a component. Depending on the type of this component this means different things (or nothing at all). Default return is 0.
 -- Parameters: ~
@@ -645,7 +673,7 @@ function I:Component_GetIntLogic_1(type, blockIndex, propertyIndex) end
 --- @param type number
 --- @param index number
 --- @param int number
-function I:Component_SetIntLogic(type, index, int) end
+function I:Component_SetIntLogic(type,index,int) end
 
 -- Sets the specified int logic for a component. Depending on the type of this component this means different things (or nothing at all).
 -- Parameters: ~
@@ -693,17 +721,7 @@ function I:Component_SetIntLogic_2(type, blockIndex, propertyIndex1, int1, prope
 --- @param int2 number
 --- @param propertyIndex3 number
 --- @param int3 number
-function I:Component_SetIntLogic_3(
-	type,
-	blockIndex,
-	propertyIndex1,
-	int1,
-	propertyIndex2,
-	int2,
-	propertyIndex3,
-	int3
-)
-end
+function I:Component_SetIntLogic_3(type, blockIndex, propertyIndex1, int1, propertyIndex2, int2, propertyIndex3, int3) end
 
 -- Sets the first boolean logic for all components of a specific type. Depending on the type of this component this means different things (or nothing at all).
 -- Parameters: ~
@@ -720,7 +738,7 @@ function I:Component_SetBoolLogicAll(type, bool) end
 --- @param type number
 --- @param blockIndex number
 --- @param propertyIndex1 number
---- @param bool1 any
+--- @param bool1 boolean
 function I:Component_SetBoolLogicAll_1(type, blockIndex, propertyIndex1, bool1) end
 
 -- Sets the two specified boolean logics for all components of a specific type. Depending on the type of this component this means different things (or nothing at all).
@@ -732,9 +750,9 @@ function I:Component_SetBoolLogicAll_1(type, blockIndex, propertyIndex1, bool1) 
 --   • {bool2} (bool): the true/false you want to set the second logic to.
 --- @param type number
 --- @param propertyIndex1 number
---- @param bool1 any
+--- @param bool1 boolean
 --- @param propertyIndex2 number
---- @param bool2 any
+--- @param bool2 boolean
 function I:Component_SetBoolLogicAll_2(type, propertyIndex1, bool1, propertyIndex2, bool2) end
 
 -- Sets the three specified boolean logics for all components of a specific type. Depending on the type of this component this means different things (or nothing at all).
@@ -748,11 +766,11 @@ function I:Component_SetBoolLogicAll_2(type, propertyIndex1, bool1, propertyInde
 --   • {bool3} (bool): the true/false you want to set the third logic to.
 --- @param type number
 --- @param propertyIndex1 number
---- @param bool1 any
+--- @param bool1 boolean
 --- @param propertyIndex2 number
---- @param bool2 any
+--- @param bool2 boolean
 --- @param propertyIndex3 number
---- @param bool3 any
+--- @param bool3 boolean
 function I:Component_SetBoolLogicAll_3(type, propertyIndex1, bool1, propertyIndex2, bool2, propertyIndex3, bool3) end
 
 -- Sets the first floating point logic for all components of a specific type. Depending on the type of this component this means different things (or nothing at all).
@@ -803,16 +821,7 @@ function I:Component_SetFloatLogicAll_2(type, propertyIndex1, float1, propertyIn
 --- @param float2 number
 --- @param propertyIndex3 number
 --- @param float3 number
-function I:Component_SetFloatLogicAll_3(
-	type,
-	propertyIndex1,
-	float1,
-	propertyIndex2,
-	float2,
-	propertyIndex3,
-	float3
-)
-end
+function I:Component_SetFloatLogicAll_3(type, propertyIndex1, float1, propertyIndex2, float2, propertyIndex3, float3) end
 
 -- Sets the first integer logic for all components of a specific type. Depending on the type of this component this means different things (or nothing at all).
 -- Parameters: ~
@@ -891,6 +900,19 @@ function I:GetWeaponCount() end
 --   • {weaponIndex} (int): the index of the weapon you want information on. 0 is the first weapon.
 -- Return: ~
 -- (WeaponInfo) information on the weapon. weaponInfo.Valid is false if you ask for an invalid weaponIndex.
+--
+-- WeaponInfo
+-- Valid [bool]: false means this WeaponInfo packet is useless. Move onto the next valid one.
+-- LocalPosition [Vector3]: the local position in the vehicle of the weapon. x is right, y is up and z is forwards.
+-- GlobalPosition [Vector3]: the global position of the weapon. x is East, y is Up and Z is North.
+-- LocalFirePoint [Vector3]: the local position in the vehicle where the projectile or laser will be created.
+-- GlobalFirePoint [Vector3]: the global position in the world where the projectile or laser will be created.
+-- Speed [float]: the speed in meters per second of the weapon- approximately correct for most weapon types.
+-- CurrentDirection [Vector3]: the direction in global coordinate system that the weapon is facing
+-- WeaponType [int]: the type of the weapon. cannon = 0,missile = 1 ,laser = 2,harpoon = 3,turret = 4,missilecontrol = 5,fireControlComputer  =6
+-- WeaponSlot [int]: the weapon slot of the weapon itself. 0 -> 5.
+-- WeaponSlotMask [int]: the weapon slot bit mask. The rightmost bit represents 'ALL' and is always on, and the second bit represents slot 1, etc. (for example 100111 will respond to slots All, 1, 2, and 5)
+-- PlayerCurrentlyControllingIt [bool]: true if the player is controlling this weapon at the moment
 --- @param weaponIndex number
 --- @return any
 function I:GetWeaponInfo(weaponIndex) end
@@ -909,6 +931,18 @@ function I:GetWeaponConstraints(weaponIndex) end
 --   • {weaponIndex} (int): the index of the weapon you want information on. 0 is the first weapon.
 -- Return: ~
 -- (BlockInfo) the block inforamation of the main component of the weapon. See 'Components' for information on BlockInfo.
+--
+-- BlockInfo
+-- Valid:[bool] false means this BlockInfo packet is useless
+-- Position:[Vector3] position in world (east,up,north)
+-- LocalPosition:[Vector3] position in construct (right,up,forwards)
+-- LocalPositionRelativeToCom:[Vector3] local position relative to the center of mass
+-- Forwards:[Vector3] forwards direction in world(east,up,north)
+-- LocalForwards:[Vector3] forward direction in construct (right,up,forwards)
+-- Rotation:[Quaternion] the rotation of the block in world coordinates
+-- LocalRotation:[Quaternion] the rotation of the block in the vehicle's (or turret's) coordinate system.
+-- SubConstructIdentifier:[int] the sub construct identifier of the subconstruct the block is part of.
+-- CustomName:[string] the custom name assigned to the block
 --- @param weaponIndex number
 --- @return any
 function I:GetWeaponBlockInfo(weaponIndex) end
@@ -924,7 +958,7 @@ function I:GetWeaponBlockInfo(weaponIndex) end
 --- @param z any
 --- @param weaponSlot number
 --- @return number
-function I:AimWeaponInDirection(weaponIndex, x, y, z, weaponSlot) end
+function I:AimWeaponInDirection(weaponIndex, x,y,z, weaponSlot) end
 
 -- Fires a specific weapon. It's important for most weapons that you aim them first as they won't fire if they can't fire in the direction they are aimed.
 -- Parameters: ~
@@ -934,7 +968,7 @@ function I:AimWeaponInDirection(weaponIndex, x, y, z, weaponSlot) end
 -- (bool) has any weapon fired? will be true if so.
 --- @param weaponIndex number
 --- @param weaponSlot number
---- @return any
+--- @return boolean
 function I:FireWeapon(weaponIndex, weaponSlot) end
 
 -- return the number of weapons on the turret or spinner. If you wanted to control the turret itself then note that it is treated as a hull mounted weapon.
@@ -952,6 +986,19 @@ function I:GetWeaponCountOnSubConstruct(SubConstructIdentifier) end
 --   • {weaponIndex} (int): the index of the weapon. 0 is the first one.
 -- Return: ~
 -- (WeaponInfo) a WeaponInfo object. See above for the definition of this structure. Note that changes to this structure in LUA do not affect the weapon itself.
+--
+-- WeaponInfo
+-- Valid [bool]: false means this WeaponInfo packet is useless. Move onto the next valid one.
+-- LocalPosition [Vector3]: the local position in the vehicle of the weapon. x is right, y is up and z is forwards.
+-- GlobalPosition [Vector3]: the global position of the weapon. x is East, y is Up and Z is North.
+-- LocalFirePoint [Vector3]: the local position in the vehicle where the projectile or laser will be created.
+-- GlobalFirePoint [Vector3]: the global position in the world where the projectile or laser will be created.
+-- Speed [float]: the speed in meters per second of the weapon- approximately correct for most weapon types.
+-- CurrentDirection [Vector3]: the direction in global coordinate system that the weapon is facing
+-- WeaponType [int]: the type of the weapon. cannon = 0,missile = 1 ,laser = 2,harpoon = 3,turret = 4,missilecontrol = 5,fireControlComputer  =6
+-- WeaponSlot [int]: the weapon slot of the weapon itself. 0 -> 5.
+-- WeaponSlotMask [int]: the weapon slot bit mask. The rightmost bit represents 'ALL' and is always on, and the second bit represents slot 1, etc. (for example 100111 will respond to slots All, 1, 2, and 5)
+-- PlayerCurrentlyControllingIt [bool]: true if the player is controlling this weapon at the moment
 --- @param SubConstructIdentifier number
 --- @param weaponIndex number
 --- @return any
@@ -974,6 +1021,18 @@ function I:GetWeaponConstraintsOnSubConstruct(SubConstructIdentifier, weaponInde
 --   • {weaponIndex} (int): the index of the weapon. 0 is the first one.
 -- Return: ~
 -- (BlockInfo) the block inforamation of the main component of the weapon. See 'Components' for information on BlockInfo.
+--
+-- BlockInfo
+-- Valid:[bool] false means this BlockInfo packet is useless
+-- Position:[Vector3] position in world (east,up,north)
+-- LocalPosition:[Vector3] position in construct (right,up,forwards)
+-- LocalPositionRelativeToCom:[Vector3] local position relative to the center of mass
+-- Forwards:[Vector3] forwards direction in world(east,up,north)
+-- LocalForwards:[Vector3] forward direction in construct (right,up,forwards)
+-- Rotation:[Quaternion] the rotation of the block in world coordinates
+-- LocalRotation:[Quaternion] the rotation of the block in the vehicle's (or turret's) coordinate system.
+-- SubConstructIdentifier:[int] the sub construct identifier of the subconstruct the block is part of.
+-- CustomName:[string] the custom name assigned to the block
 --- @param SubConstructIdentifier number
 --- @param weaponIndex number
 --- @return any
@@ -986,7 +1045,7 @@ function I:GetWeaponBlockInfoOnSubConstruct(SubConstructIdentifier, weaponIndex)
 -- as per AimWeaponInDirection
 ---
 --- @return any
-function I:AimWeaponInDirectionOnSubConstruct(SubConstructIdentifier, weaponIndex, x, y, z, weaponSlot) end
+function I:AimWeaponInDirectionOnSubConstruct(SubConstructIdentifier,weaponIndex,x,y,z,weaponSlot) end
 
 -- Fires a specific weapon. It's important for most weapons that you aim them first as they won't fire if they can't fire in the direction they are aimed.
 -- Parameters: ~
@@ -994,8 +1053,8 @@ function I:AimWeaponInDirectionOnSubConstruct(SubConstructIdentifier, weaponInde
 -- Return: ~
 -- (bool) has any weapon fired? will be true if so.
 ---
---- @return any
-function I:FireWeaponOnSubConstruct(SubConstructIdentifier, weaponIndex, weaponSlot) end
+--- @return boolean
+function I:FireWeaponOnSubConstruct(SubConstructIdentifier,weaponIndex,weaponSlot) end
 
 -- Return the number of missiles the construct has warnings for
 -- Return: ~
@@ -1008,6 +1067,16 @@ function I:GetNumberOfWarnings() end
 --   • {missileIndex} (int): the index of the missile
 -- Return: ~
 -- (MissileWarningInfo) information on the missile. missileWarningInfo.Valid = false if you didn't request an existing missile index
+--
+-- MissileWarningInfo
+-- Valid: [bool] false if the warning is junk due to incorrect indices.
+-- Position: [Vector3] the position of the missile
+-- Velocity: [Vector3] the velocity of the missile in meters per second
+-- Range : [float] the distance from centre of mass of your construct to the missile
+-- Azimuth :[float] the azimuth angle between your construct's forward direction and the missile (degrees)
+-- Elevation: [float] the elevation angle between your construct's forward direction and the missile (degrees)
+-- TimeSinceLaunch: [float] the time since missile launch.
+-- Id: [int] the unique Id of the missile
 --- @param missileIndex number
 --- @return any
 function I:GetMissileWarning(missileIndex) end
@@ -1032,6 +1101,18 @@ function I:GetLuaControlledMissileCount(luaTransceiverIndex) end
 --   • {luaTransceiverIndex} (int): the index of the LuaTransceiver where 0 is the first one
 -- Return: ~
 -- (BlockInfo) a BlockInfo object for the LuaTransceiver's Launchpad
+--
+-- BlockInfo
+-- Valid:[bool] false means this BlockInfo packet is useless
+-- Position:[Vector3] position in world (east,up,north)
+-- LocalPosition:[Vector3] position in construct (right,up,forwards)
+-- LocalPositionRelativeToCom:[Vector3] local position relative to the center of mass
+-- Forwards:[Vector3] forwards direction in world(east,up,north)
+-- LocalForwards:[Vector3] forward direction in construct (right,up,forwards)
+-- Rotation:[Quaternion] the rotation of the block in world coordinates
+-- LocalRotation:[Quaternion] the rotation of the block in the vehicle's (or turret's) coordinate system.
+-- SubConstructIdentifier:[int] the sub construct identifier of the subconstruct the block is part of.
+-- CustomName:[string] the custom name assigned to the block
 --- @param luaTransceiverIndex number
 --- @return any
 function I:GetLuaTransceiverInfo(luaTransceiverIndex) end
@@ -1042,10 +1123,20 @@ function I:GetLuaTransceiverInfo(luaTransceiverIndex) end
 --   • {missileIndex} (int): 0 is the first missile.
 -- Return: ~
 -- (MissileWarningInfo) Get a MissileWarningInfo object for your missile.
+--
+-- MissileWarningInfo
+-- Valid: [bool] false if the warning is junk due to incorrect indices.
+-- Position: [Vector3] the position of the missile
+-- Velocity: [Vector3] the velocity of the missile in meters per second
+-- Range : [float] the distance from centre of mass of your construct to the missile
+-- Azimuth :[float] the azimuth angle between your construct's forward direction and the missile (degrees)
+-- Elevation: [float] the elevation angle between your construct's forward direction and the missile (degrees)
+-- TimeSinceLaunch: [float] the time since missile launch.
+-- Id: [int] the unique Id of the missile
 --- @param luaTransceiverIndex number
 --- @param missileIndex number
 --- @return any
-function I:GetLuaControlledMissileInfo(luaTransceiverIndex, missileIndex) end
+function I:GetLuaControlledMissileInfo(luaTransceiverIndex,missileIndex) end
 
 -- Sets the aim point. No guidance modules will help achieve this aim point so do your own predictive guidance. Needs a lua receiver component ON the missile to work.
 -- Parameters: ~
@@ -1055,7 +1146,7 @@ function I:GetLuaControlledMissileInfo(luaTransceiverIndex, missileIndex) end
 --- @param luaTransceiverIndex number
 --- @param missileIndex number
 --- @param z any
-function I:SetLuaControlledMissileAimPoint(luaTransceiverIndex, missileIndex, x, y, z) end
+function I:SetLuaControlledMissileAimPoint(luaTransceiverIndex,missileIndex,x,y,z) end
 
 -- Explodes the missile. Needs a lua receiver component ON the missile to work.
 -- Parameters: ~
@@ -1063,7 +1154,7 @@ function I:SetLuaControlledMissileAimPoint(luaTransceiverIndex, missileIndex, x,
 --   • {missileIndex} (int): as above.
 --- @param luaTransceiverIndex number
 --- @param missileIndex number
-function I:DetonateLuaControlledMissile(luaTransceiverIndex, missileIndex) end
+function I:DetonateLuaControlledMissile(luaTransceiverIndex,missileIndex) end
 
 -- Find out if the missile has an interceptor capability.
 -- Parameters: ~
@@ -1074,7 +1165,7 @@ function I:DetonateLuaControlledMissile(luaTransceiverIndex, missileIndex) end
 --- @param luaTransceiverIndex number
 --- @param missileIndex number
 --- @return any
-function I:IsLuaControlledMissileAnInterceptor(luaTransceiverIndex, missileIndex) end
+function I:IsLuaControlledMissileAnInterceptor(luaTransceiverIndex,missileIndex) end
 
 -- Set the target of an interceptor missile to be a specific missile for which a warning exists. This is enough to get the interceptor missile to behave normally but if you want to actually guide it yourself use SetLuaControlledMissileInterceptorStandardGuidanceOnOff to turn the guidance off.
 -- Parameters: ~
@@ -1084,7 +1175,7 @@ function I:IsLuaControlledMissileAnInterceptor(luaTransceiverIndex, missileIndex
 --- @param luaTransceiverIndex number
 --- @param missileIndex number
 --- @param targetIndex number
-function I:SetLuaControlledMissileInterceptorTarget(luaTransceiverIndex, missileIndex, targetIndex) end
+function I:SetLuaControlledMissileInterceptorTarget(luaTransceiverIndex,missileIndex,targetIndex) end
 
 -- Turns standard guidance for the missile on and off. Turn it off if you're going to guide the missile in yourself.
 -- Parameters: ~
@@ -1093,8 +1184,8 @@ function I:SetLuaControlledMissileInterceptorTarget(luaTransceiverIndex, missile
 --   • {onOff} (bool): true will use standard missile guidance to aim at the interceptors target, false will rely on SetLuaControlledMissileAimPoint for aiming coordinates.
 --- @param luaTransceiverIndex number
 --- @param missileIndex number
---- @param onOff any
-function I:SetLuaControlledMissileInterceptorStandardGuidanceOnOff(luaTransceiverIndex, missileIndex, onOff) end
+--- @param onOff boolean
+function I:SetLuaControlledMissileInterceptorStandardGuidanceOnOff(luaTransceiverIndex,missileIndex, onOff) end
 
 -- Set the speed factor. In continuous mode spinners this allows some blades to spin slower than others, in insta-spin blades this is related to the speed they are spinning at (1 is max speed, 0 is no speed), and in rotation spinners this does nothing.
 -- Parameters: ~
@@ -1102,7 +1193,7 @@ function I:SetLuaControlledMissileInterceptorStandardGuidanceOnOff(luaTransceive
 --   • {speedFactor} (float): 0 to 1, the fractional power output
 --- @param SubConstructIdentifier number
 --- @param speedFactor number
-function I:SetSpinBlockSpeedFactor(SubConstructIdentifier, speedFactor) end
+function I:SetSpinBlockSpeedFactor(SubConstructIdentifier,speedFactor) end
 
 -- Sets the power drive. this allows heliblades to produce more force. Requires engine power. 0 removes engine use. 10 is maximum power use.
 -- Parameters: ~
@@ -1110,7 +1201,7 @@ function I:SetSpinBlockSpeedFactor(SubConstructIdentifier, speedFactor) end
 --   • {drive} (float): the relative power use of the spinner (0 to 10).
 --- @param SubConstructIdentifier number
 --- @param drive number
-function I:SetSpinBlockPowerDrive(SubConstructIdentifier, drive) end
+function I:SetSpinBlockPowerDrive(SubConstructIdentifier,drive) end
 
 -- Sets the angle of rotation. Changes the spinner into Rotate mode. 'Rotatebackwards' is not available through this interface but you shouldn't need it.
 -- Parameters: ~
@@ -1134,7 +1225,7 @@ function I:SetSpinBlockContinuousSpeed(SubConstructIdentifier, speed) end
 --   • {magnitudeAndDirection} (float): -1 means spin backwards full speed, 1 is spin forwards full speed
 --- @param SubConstructIdentifier number
 --- @param magnitudeAndDirection number
-function I:SetSpinBlockInstaSpin(SubConstructIdentifier, magnitudeAndDirection) end
+function I:SetSpinBlockInstaSpin(SubConstructIdentifier,magnitudeAndDirection) end
 
 -- Get the extension of the piston, -1 if not found.
 -- Parameters: ~
@@ -1160,7 +1251,7 @@ function I:GetPistonVelocity(SubConstructIdentifier) end
 --   • {ExtensionDistance} (float): the extension distance of the piston (in meters, will be clamped if necessary)
 --- @param SubConstructIdentifier number
 --- @param ExtensionDistance number
-function I:SetPistonExtension(SubConstructIdentifier, ExtensionDistance) end
+function I:SetPistonExtension(SubConstructIdentifier,ExtensionDistance) end
 
 -- Dedicated helicopter spinners have their own interface because they have their own indexing system
 -- Parameters: ~
@@ -1168,7 +1259,7 @@ function I:SetPistonExtension(SubConstructIdentifier, ExtensionDistance) end
 --   • {ExtensionVelocity} (float): the velocity of the piston in meters per second (between 0.1 and 2)
 --- @param SubConstructIdentifier number
 --- @param ExtensionVelocity number
-function I:SetPistonVelocity(SubConstructIdentifier, ExtensionVelocity) end
+function I:SetPistonVelocity(SubConstructIdentifier,ExtensionVelocity) end
 
 -- Returns the number of dedicated helicopter spinners
 -- Return: ~
@@ -1181,6 +1272,18 @@ function I:GetDedibladeCount() end
 --   • {DedibladeIndex} (int): 0 is the first dedicated helicopter spinner
 -- Return: ~
 -- (BlockInfo) a block info object for the dedicated helicopter spinner.
+--
+-- BlockInfo
+-- Valid:[bool] false means this BlockInfo packet is useless
+-- Position:[Vector3] position in world (east,up,north)
+-- LocalPosition:[Vector3] position in construct (right,up,forwards)
+-- LocalPositionRelativeToCom:[Vector3] local position relative to the center of mass
+-- Forwards:[Vector3] forwards direction in world(east,up,north)
+-- LocalForwards:[Vector3] forward direction in construct (right,up,forwards)
+-- Rotation:[Quaternion] the rotation of the block in world coordinates
+-- LocalRotation:[Quaternion] the rotation of the block in the vehicle's (or turret's) coordinate system.
+-- SubConstructIdentifier:[int] the sub construct identifier of the subconstruct the block is part of.
+-- CustomName:[string] the custom name assigned to the block
 --- @param DedibladeIndex number
 --- @return any
 function I:GetDedibladeInfo(DedibladeIndex) end
@@ -1191,7 +1294,7 @@ function I:GetDedibladeInfo(DedibladeIndex) end
 -- Return: ~
 -- (bool) true if on hull
 --- @param DedibladeIndex number
---- @return any
+--- @return boolean
 function I:IsDedibladeOnHull(DedibladeIndex) end
 
 -- Set the speed factor. In continuous mode spinners this allows some blades to spin slower than others, in insta-spin blades this is related to the speed they are spinning at (1 is max speed, 0 is no speed), and in rotation spinners this does nothing.
@@ -1200,7 +1303,7 @@ function I:IsDedibladeOnHull(DedibladeIndex) end
 --   • {speedFactor} (float): 0 to 1, the fractional power output
 --- @param DedibladeIndex number
 --- @param speedFactor number
-function I:SetDedibladeSpeedFactor(DedibladeIndex, speedFactor) end
+function I:SetDedibladeSpeedFactor(DedibladeIndex,speedFactor) end
 
 -- Sets the power drive. this allows heliblades to produce more force. Requires engine power. 0 removes engine use. 10 is maximum power use.
 -- Parameters: ~
@@ -1208,7 +1311,7 @@ function I:SetDedibladeSpeedFactor(DedibladeIndex, speedFactor) end
 --   • {drive} (float): the relative power use of the dedicated helicopter spinner (0 to 10).
 --- @param DedibladeIndex number
 --- @param drive number
-function I:SetDedibladePowerDrive(DedibladeIndex, drive) end
+function I:SetDedibladePowerDrive(DedibladeIndex,drive) end
 
 -- Sets the speed of rotation. Changes the dedicated helicopter spinner into continuous mode. 'ContinuouseReverse' mode is not available through this interface so set the speed negative to facilitate reverse spinning.
 -- Parameters: ~
@@ -1224,7 +1327,7 @@ function I:SetDedibladeContinuousSpeed(DedibladeIndex, speed) end
 --   • {magnitudeAndDirection} (float): -1 means spin backwards full speed, 1 is spin forwards full speed
 --- @param DedibladeIndex number
 --- @param magnitudeAndDirection number
-function I:SetDedibladeInstaSpin(DedibladeIndex, magnitudeAndDirection) end
+function I:SetDedibladeInstaSpin(DedibladeIndex,magnitudeAndDirection) end
 
 -- Returns the number of SubConstructs on the vehicle, including SubConstructs on SubConstructs
 -- Return: ~
@@ -1276,7 +1379,7 @@ function I:GetParent(SubConstructIdentifier) end
 -- Return: ~
 -- (bool) 'true' if the SubConstruct is a turret, 'false' otherwise.
 --- @param SubConstructIdentifier number
---- @return any
+--- @return boolean
 function I:IsTurret(SubConstructIdentifier) end
 
 -- Indicates if the SubConstruct is a spin block or not
@@ -1285,7 +1388,7 @@ function I:IsTurret(SubConstructIdentifier) end
 -- Return: ~
 -- (bool) 'true' if the SubConstruct is a spin block, 'false' otherwise.
 --- @param SubConstructIdentifier number
---- @return any
+--- @return boolean
 function I:IsSpinBlock(SubConstructIdentifier) end
 
 -- Indicates if the SubConstruct is a piston or not
@@ -1294,7 +1397,7 @@ function I:IsSpinBlock(SubConstructIdentifier) end
 -- Return: ~
 -- (bool) 'true' if the SubConstruct is a piston, 'false' otherwise.
 --- @param SubConstructIdentifier number
---- @return any
+--- @return boolean
 function I:IsPiston(SubConstructIdentifier) end
 
 -- Indicates if the SubConstruct is destroyed or not
@@ -1303,7 +1406,7 @@ function I:IsPiston(SubConstructIdentifier) end
 -- Return: ~
 -- (bool) 'true' if the SubConstruct is not completely destroyed.
 --- @param SubConstructIdentifier number
---- @return any
+--- @return boolean
 function I:IsAlive(SubConstructIdentifier) end
 
 -- Indicates if the SubConstruct is on the hull or not
@@ -1312,7 +1415,7 @@ function I:IsAlive(SubConstructIdentifier) end
 -- Return: ~
 -- (bool) 'true' if the SubConstruct is on the hull.
 --- @param SubConstructIdentifier number
---- @return any
+--- @return boolean
 function I:IsSubConstructOnHull(SubConstructIdentifier) end
 
 -- Returns a BlockInfo object for the active block of the SubConstruct, and invalid BlockInfo if the SubConstruct hasn't been found.
@@ -1320,6 +1423,18 @@ function I:IsSubConstructOnHull(SubConstructIdentifier) end
 --   • {SubConstructIdentifier} (int): the persistent identifier of the SubConstruct
 -- Return: ~
 -- (BlockInfo) a BlockInfo object for the SubConstruct active block (the SpinBlock block, the piston or the turret block)
+--
+-- BlockInfo
+-- Valid:[bool] false means this BlockInfo packet is useless
+-- Position:[Vector3] position in world (east,up,north)
+-- LocalPosition:[Vector3] position in construct (right,up,forwards)
+-- LocalPositionRelativeToCom:[Vector3] local position relative to the center of mass
+-- Forwards:[Vector3] forwards direction in world(east,up,north)
+-- LocalForwards:[Vector3] forward direction in construct (right,up,forwards)
+-- Rotation:[Quaternion] the rotation of the block in world coordinates
+-- LocalRotation:[Quaternion] the rotation of the block in the vehicle's (or turret's) coordinate system.
+-- SubConstructIdentifier:[int] the sub construct identifier of the subconstruct the block is part of.
+-- CustomName:[string] the custom name assigned to the block
 --- @param SubConstructIdentifier number
 --- @return any
 function I:GetSubConstructInfo(SubConstructIdentifier) end
@@ -1344,6 +1459,29 @@ function I:GetFriendlyCount() end
 --   • {index} (int): 0 is the first construct
 -- Return: ~
 -- (FriendlyInfo) the FriendlyInfo object
+--
+-- FriendlyInfo
+-- Valid:[bool] false if the Friendly Info could not be retrieved
+-- Rotation:[Quaternion] the rotation of the friendly construct
+-- ReferencePosition: [Vector3] the position of the construct (world East Up North frame) from which PositiveSize and Negative size are referenced
+-- PositiveSize: [Vector3] the extent of the construct in the right,up,forwards direction relative to ReferencePostion
+-- NegativeSize: [Vector3] the extent of the construct in the left,down,back direction relative to ReferencePosition
+-- CenterOfMass: [Vector3] the centre of mass of the construct in world East Up North frame
+-- Velocity: [Vector3] the velocity of the construct in world East Up North frame
+-- UpVector: [Vector3] The up vector in world East Up North frame
+-- RightVector: [Vector3] The up vector in world East Up North frame
+-- ForwardVector: [Vector3] The forward vector in world East Up North frame
+-- HealthFraction: [float] the fraction of health (including turrets etc)
+-- SparesFraction: [float] the spares fraction. Returns 1 if no spares storage present
+-- AmmoFraction: [float] the ammo fraction. Returns 1 if no ammo storage present
+-- FuelFraction: [float] the fuel fraction. Returns 1 if no fuel storage present
+-- EnergyFraction: [float] the energy fraction. Returns 1 if no batteries present
+-- PowerFraction: [float] the power fraction. Returns 1 if no fuel storage present
+-- ElectricPowerFraction: [float] the electric power fraction. Returns 1 if no fuel storage present
+-- AxisAlignedBoundingBoxMinimum: [Vector3] the world East Up North minimum extent of the construct
+-- AxisAlignedBoundingBoxMaximum: [Vector3] the world East Up North maximum extent of the construct
+-- BlueprintName: [string] the name
+-- Id: [int] the unique Id of the construct
 --- @param index number
 --- @return any
 function I:GetFriendlyInfo(index) end
@@ -1353,6 +1491,30 @@ function I:GetFriendlyInfo(index) end
 --   • {Id} (int): the Id you want
 -- Return: ~
 -- (FriendlyInfo) the FriendlyInfo object
+--
+-- FriendlyInfo
+-- Valid:[bool] false if the Friendly Info could not be retrieved
+-- Rotation:[Quaternion] the rotation of the friendly construct
+-- ReferencePosition: [Vector3] the position of the construct (world East Up North frame) from which PositiveSize and Negative size are referenced
+-- PositiveSize: [Vector3] the extent of the construct in the right,up,forwards direction relative to ReferencePostion
+-- NegativeSize: [Vector3] the extent of the construct in the left,down,back direction relative to ReferencePosition
+-- CenterOfMass: [Vector3] the centre of mass of the construct in world East Up North frame
+-- Velocity: [Vector3] the velocity of the construct in world East Up North frame
+-- UpVector: [Vector3] The up vector in world East Up North frame
+-- RightVector: [Vector3] The up vector in world East Up North frame
+-- ForwardVector: [Vector3] The forward vector in world East Up North frame
+-- HealthFraction: [float] the fraction of health (including turrets etc)
+-- SparesFraction: [float] the spares fraction. Returns 1 if no spares storage present
+-- AmmoFraction: [float] the ammo fraction. Returns 1 if no ammo storage present
+-- FuelFraction: [float] the fuel fraction. Returns 1 if no fuel storage present
+-- EnergyFraction: [float] the energy fraction. Returns 1 if no batteries present
+-- PowerFraction: [float] the power fraction. Returns 1 if no fuel storage present
+-- ElectricPowerFraction: [float] the electric power fraction. Returns 1 if no fuel storage present
+-- AxisAlignedBoundingBoxMinimum: [Vector3] the world East Up North minimum extent of the construct
+-- AxisAlignedBoundingBoxMaximum: [Vector3] the world East Up North maximum extent of the construct
+-- BlueprintName: [string] the name
+-- Id: [int] the unique Id of the construct
 --- @param Id number
 --- @return any
 function I:GetFriendlyInfoById(Id) end
+
