@@ -6,6 +6,7 @@ It includes:
 
 - build.py script for separating your lua code in several files
 - I.lua file that contains all From the Depths interface functions with documentation. Can be used for with some IDE (I use neovim) for autocompletion and displaying documentation.
+- Mathf.lua stubs for Mathf functions from c# Unity.
 
 ## build.py
 
@@ -55,3 +56,7 @@ require('I.lua')
 And than your IDE should pick it up and start giving you autocompletion suggestions.
 
 I generated this file by parsing [this file](https://gist.github.com/SurvivorBob/955f815a10b104183983a5cd44377892).
+
+## Mathf.lua
+
+Usage is the same as I.lua but for Mathf functins. All the functions are taken from [here](https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Math/Mathf.cs).
