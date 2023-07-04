@@ -1,4 +1,4 @@
-require("low.Class")
+require("example.Class")
 require("I")
 
 ExampleClass = Class()
