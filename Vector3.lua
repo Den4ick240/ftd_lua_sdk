@@ -51,13 +51,11 @@ function Vector3.SmoothDamp(current, target, Vector3, smoothTime, , ) end
 ---@param x number
 ---@param y number
 ---@param z number
----@return None
 function Vector3(x, y, z) end
 
 -- Creates a new vector with given x, y components and sets /z/ to zero.
 ---@param x number
 ---@param y number
----@return None
 function Vector3(x, y) end
 
 -- Set x, y and z components of an existing Vector3.

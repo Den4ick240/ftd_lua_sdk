@@ -6,7 +6,7 @@ It includes:
 
 - build.py script for separating your lua code in several files
 - I.lua file that contains all From the Depths interface functions with documentation. Can be used for with some IDE (I use neovim) for autocompletion and displaying documentation.
-- Mathf.lua stubs for Mathf functions from c# Unity.
+- Mathf.lua, Vector3.lua, Quaternion.lua: stubs for c# Unity libraries accessible from LUA Box in FTD.
 
 ## build.py
 
@@ -16,7 +16,7 @@ BTW this script was ~95% written by ChatGPT
 
 ### Features
 
-- Combines several files into one
+- Combines several files into one based on 'require(...)' statements. Builds a dependency tree, so your files will be combined in the right order.
 - Can collapse files to a single line to save space in the LUA Box
 - Can exclude some files that you don't want in the LUA Box (stubs for example)
 - Automatically copies the result into your clipboard if you have pyperclip installed
@@ -59,4 +59,12 @@ I generated this file by parsing [this file](https://gist.github.com/SurvivorBob
 
 ## Mathf.lua
 
-Usage is the same as I.lua but for Mathf functins. All the functions are taken from [here](https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Math/Mathf.cs).
+Usage is the same as I.lua but for Mathf functions. All the functions are taken from [here](https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Math/Mathf.cs).
+
+## Vector3.lua
+
+Usage is the same as I.lua but for Vector3 functions. All the functions are taken from [here](https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Math/Vector3.cs).
+
+## Quaternion.lua
+
+Usage is the same as I.lua but for Quaternion functions. All the functions are taken from [here](https://github.com/Unity-Technologies/UnityCsReference/blob/master/Runtime/Export/Math/Quaternion.cs).
