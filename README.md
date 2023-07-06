@@ -25,7 +25,14 @@ BTW this script was ~95% written by ChatGPT
 
 build.py must be run from the root of your lua project. It will scan for all lua files in the current working directory.
 
-Use require('path.to.file.lua') inside your lua files to indicate that some files depend on others (see [example](./example/ExampleClass.lua)).
+Use require('path.to.file.lua') inside your lua files to indicate that some files depend on others.
+For example if you call the script on the [test/test.lua](./test/test.lua) file by following command:
+
+```
+build.py test/test.lua
+```
+
+Then the resulting file will be [./.build/test/test.lua](./.build/test/test.lua) (content of this file will also be copied to your clipboard if you have pyperclip installed).
 
 When run without arguments, build.py will combine all the files into one. If you pass some file as argument, it will only combine the given file and it's dependencies.
 
