@@ -53,7 +53,7 @@ def get_ordered_files(dependency_tree):
 
 
 def remove_comments_and_requires(content, one_line_comment):
-    content = re.sub(r'--\[\[(.*?)\]\]', '', content, flags=re.DOTALL)  # Remove multi-line comments
+    content = re.sub(r'--\[(=*)\[(.*?)\]\1\]', '', content, flags=re.DOTALL)  # Remove multi-line comments
     content = re.sub(r'--.*', '', content)  # Remove single-line comments
     content = re.sub(r'require\(["\'](.*?)["\']\)', '', content)  # Remove require statements
     content = content.strip()
