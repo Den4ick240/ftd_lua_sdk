@@ -18,11 +18,15 @@ def get_lua_files():
 
 def extract_dependencies(lua_file):
     dependencies = []
-    with open(lua_file, 'r') as file:
+    with open(lua_file, "r") as file:
         content = file.read()
         matches = re.findall(r'require\(["\'](.*?)["\']\)', content)
         dependencies.extend(
-            [os.path.join(*match.replace('.lua', '').split('.')) + '.lua' for match in matches])
+            [
+                os.path.join(*match.replace(".lua", "").split(".")) + ".lua"
+                for match in matches
+            ]
+        )
     return dependencies
 
 
@@ -53,9 +57,13 @@ def get_ordered_files(dependency_tree):
 
 
 def remove_comments_and_requires(content, one_line_comment):
-    content = re.sub(r'--(?!\[=*\[).*', '', content)  # Remove single-line comments
-    content = re.sub(r'--\[(=*)\[(.*?)\]\1\]', '', content, flags=re.DOTALL)  # Remove multi-line comments
-    content = re.sub(r'require\(["\'](.*?)["\']\)', '', content)  # Remove require statements
+    content = re.sub(r"--(?!\[=*\[).*", "", content)  # Remove single-line comments
+    content = re.sub(
+        r"--\[(=*)\[(.*?)\]\1\]", "", content, flags=re.DOTALL
+    )  # Remove multi-line comments
+    content = re.sub(
+        r'require\(["\'](.*?)["\']\)', "", content
+    )  # Remove require statements
     content = content.strip()
     if one_line_comment:
         content = content.replace("\n", " ")
@@ -65,7 +73,7 @@ def remove_comments_and_requires(content, one_line_comment):
 def combine_files(lua_files):
     combined_content = ""
     for lua_file in lua_files:
-        with open(lua_file, 'r') as file:
+        with open(lua_file, "r") as file:
             content = file.read()
             if "-- NO INCLUDE" in content:
                 continue
@@ -73,30 +81,41 @@ def combine_files(lua_files):
             content = remove_comments_and_requires(content, one_line_comment)
             file_name = os.path.splitext(lua_file)[0].upper()
             import_comment = f"-- IMPORT {file_name}\n"
-            combined_content += import_comment + content + '\n\n'
+            combined_content += import_comment + content + "\n\n"
     return combined_content.strip()
 
 
 def create_result_file(combined_content, output_file):
-    result_file_path = os.path.join('.build', output_file)
+    result_file_path = os.path.join(".build", output_file)
     os.makedirs(os.path.dirname(result_file_path), exist_ok=True)
-    with open(result_file_path, 'w') as file:
+    with open(result_file_path, "w") as file:
         file.write(combined_content)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if len(sys.argv) == 1:
         lua_files = get_lua_files()
-        output_file = 'result.lua'
+        output_file = "result.lua"
     else:
         output_file = sys.argv[1]
         lua_files = [output_file]
     dependency_tree = build_dependency_tree(lua_files)
     ordered_files = get_ordered_files(dependency_tree)
-    combined_content = combine_files(ordered_files)
+    combined_content = (
+        combine_files(ordered_files)
+        + """\n
+function Update(i)
+    I = i
+    Main()
+end
+    """
+    )
     try:
         import pyperclip
+
         pyperclip.copy(combined_content)
     except ImportError:
-        print('Install pyperclip if you want the code automatically copied to clipboard')
+        print(
+            "Install pyperclip if you want the code automatically copied to clipboard"
+        )
     create_result_file(combined_content, output_file)

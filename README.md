@@ -16,6 +16,7 @@ BTW this script was ~95% written by ChatGPT
 
 ### Features
 
+- inserts "Update" function that saves "I" into a global variable and calls "Main" function (so you have to create "Main" function, and "I" is available globally)
 - Combines several files into one based on 'require(...)' statements. Builds a dependency tree, so your files will be combined in the right order.
 - Can collapse files to a single line to save space in the LUA Box
 - Can exclude some files that you don't want in the LUA Box (stubs for example)
@@ -42,7 +43,8 @@ If you want some file to be collapsed into a single file, just add following lin
 -- ONE LINE
 ```
 
-If you don't want some file to be included in the result (like I.lua for example), just add following line to it:
+If you don't want some file to be included in the result (like I.lua for
+example), just add following line to it:
 
 ```
 -- NO INCLUDE
@@ -52,7 +54,9 @@ The result will be saved in .build folder.
 
 ## I.lua
 
-This file contains stubs for all From the Depths functions and fields that can be used inside LUA Box. All of them are documented based on in game description.
+This file contains stubs for all From the Depths functions and fields that can
+be used inside LUA Box. All of them are documented based on in game
+description.
 
 Just add this to your lua script:
 
@@ -61,6 +65,10 @@ require('I.lua')
 ```
 
 And than your IDE should pick it up and start giving you autocompletion suggestions.
+
+This won't work if you have some other entity with name "I" in the scope, that's
+why "I" suggest using "function Main()" as starting point, and "I" will be
+available globally.
 
 I generated this file by parsing [this file](https://gist.github.com/SurvivorBob/955f815a10b104183983a5cd44377892).
 

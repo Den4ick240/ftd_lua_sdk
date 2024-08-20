@@ -4,16 +4,22 @@ function Class(parent) 	local class = {} 	local mClass = {} 	class.__index = cla
 -- IMPORT EXAMPLE/EXAMPLECLASS
 ExampleClass = Class()
 
-function ExampleClass:init(I)
-	self.I = I
+function ExampleClass:init(msg)
+  self.msg = msg
 end
 
 function ExampleClass:foo()
-	self.I:LogToHud("Hello World!")
+  I:LogToHud(self.msg)
 end
 
 -- IMPORT TEST/TEST
-function Update(I)
-	local exampleObject = ExampleClass(I)
-	exampleObject:foo()
+function Main()
+  local exampleObject = ExampleClass("Hello Neter")
+  exampleObject:foo()
 end
+
+function Update(i)
+    I = i
+    Main()
+end
+    

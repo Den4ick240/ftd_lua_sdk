@@ -4,7 +4,7 @@ require("Mathf")
 require("Vector3")
 require("Quaternion")
 
-function Update(I)
-	local exampleObject = ExampleClass(I)
-	exampleObject:foo()
+function Main()
+  local exampleObject = ExampleClass("Hello Neter")
+  exampleObject:foo()
 end

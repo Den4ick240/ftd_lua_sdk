@@ -3,10 +3,10 @@ require("I")
 
 ExampleClass = Class()
 
-function ExampleClass:init(I)
-	self.I = I
+function ExampleClass:init(msg)
+  self.msg = msg
 end
 
 function ExampleClass:foo()
-	self.I:LogToHud("Hello World!")
+  I:LogToHud(self.msg)
 end
